@@ -1,0 +1,52 @@
+{
+  "settings": {
+    "cushion_target_eur": 1500,
+    "daily_cash_cap_eur": 20,
+    "low_balance_threshold_eur": 200,
+    "etf_reduced_weekly_eur": 50,
+    "etf_sustainable_weekly_eur": 100
+  },
+  "income": {
+    "salary_eur": 2300
+  },
+  "balances": {
+    "cushion_cash_eur": 600,
+    "tr_cash_eur": 150
+  },
+  "etf": {
+    "current_weekly_eur": 100,
+    "buy_planned": true
+  },
+  "fixed_charges": [
+    { "label": "Virement compte commun", "amount_eur": 1200 },
+    { "label": "Prêt papa (0%)", "amount_eur": 250 },
+    { "label": "Épargne enfant", "amount_eur": 50 }
+  ],
+  "accounts": [
+    { "id": "tr", "name": "Trade Republic", "type": "cash+invest", "rate": 2.25 },
+    { "id": "main", "name": "Compte principal", "type": "courant" },
+    { "id": "common", "name": "Compte commun", "type": "courant" },
+    { "id": "savings", "name": "Épargne classique", "type": "epargne", "rate": 0.40 }
+  ],
+  "loan_family": {
+    "label": "Prêt papa (0%)",
+    "monthly_eur": 250,
+    "start": "2025-10-01",
+    "end": "2035-10-01",
+    "accelerate": false
+  },
+  "guardrails": [
+    { "key": "no_mobile_pay", "label": "Apple/Google Pay retiré du téléphone", "done": false },
+    { "key": "card_stored", "label": "Carte physique rangée (pas sur moi)", "done": false },
+    { "key": "daily_cash", "label": "Plafond cash quotidien en place", "done": false },
+    { "key": "epis", "label": "Auto-exclusion EPIS demandée (gamingcommission.be)", "done": false },
+    { "key": "blocker", "label": "Bloqueur de sites de jeu installé (Stop Jeu / Gamban)", "done": false },
+    { "key": "trusted_person", "label": "Une personne de confiance est au courant", "done": false }
+  ],
+  "subscriptions": [
+    { "label": "Streaming (perso)", "amount_eur": 13, "scope": "perso" },
+    { "label": "Outil alcego (pro)", "amount_eur": 12, "scope": "pro" }
+  ],
+  "transactions": [],
+  "gambling_free_since": null
+}

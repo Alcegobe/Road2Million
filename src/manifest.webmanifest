@@ -1,0 +1,26 @@
+{
+  "name": "Road2Million — Budget & garde-fous",
+  "short_name": "Road2M",
+  "description": "Copilote de discipline budgétaire local : matelas de sécurité, ETF soutenable, garde-fous.",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1220",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

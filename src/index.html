@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="description" content="Copilote de discipline budgétaire local — matelas, ETF soutenable, garde-fous." />
+  <title>Road2Million</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icons/icon.svg" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Road2Million</h1>
+    <div class="sub">Le matelas d'abord · l'ETF soutenable ensuite · 🔒 tout reste local</div>
+  </header>
+
+  <!-- ======================= TABLEAU DE BORD ======================= -->
+  <section id="view-dashboard" class="view active">
+    <div id="alerts"></div>
+
+    <div class="card">
+      <h2>🛟 Matelas de sécurité <span class="tag" id="cushion-tag">cash</span></h2>
+      <div class="kpi">
+        <span class="big" id="cushion-current">—</span>
+        <span class="target" id="cushion-target"></span>
+      </div>
+      <div class="progress" id="cushion-bar"><span style="width:0%"></span></div>
+      <div class="hint" id="cushion-hint"></div>
+    </div>
+
+    <div class="card">
+      <h2>📈 Investissement ETF <span class="tag" id="etf-weekly">—</span></h2>
+      <div id="etf-pill"></div>
+      <div class="hint" id="etf-message" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h2>💸 Le mois en un coup d'œil</h2>
+      <div class="rows" id="month-rows"></div>
+    </div>
+
+    <div class="card" id="loan-card">
+      <h2>👨‍👦 Prêt papa (0 %) <span class="tag">on n'accélère pas</span></h2>
+      <div id="loan-body"></div>
+    </div>
+
+    <div class="card" id="gambling-card" style="display:none">
+      <h2>🌱 Encouragement</h2>
+      <div class="kpi"><span class="big" id="gf-days">—</span><span class="target">jours sans jeu</span></div>
+      <div class="hint">Un repère, pas un contrôle. Chaque jour compte.</div>
+    </div>
+  </section>
+
+  <!-- ======================= GARDE-FOUS ======================= -->
+  <section id="view-guardrails" class="view">
+    <div class="card">
+      <h2>🛡️ Garde-fous <span class="tag" id="gr-count">0/0</span></h2>
+      <div class="progress good" id="gr-bar"><span style="width:0%"></span></div>
+      <div class="checklist" id="guardrails-list" style="margin-top:14px"></div>
+      <div class="hint" style="margin-top:12px">
+        Les garde-fous valent plus que n'importe quelle ligne de code.
+        EPIS : gamingcommission.be → « Protection des joueurs ». Bloqueurs : Stop Jeu / Gamban (couvrent aussi l'offshore).
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= RÉGLAGES ======================= -->
+  <section id="view-settings" class="view">
+    <div class="card">
+      <h2>⚙️ Mes chiffres</h2>
+
+      <div class="subhead">Objectifs</div>
+      <div class="grid-2">
+        <div class="field"><label>Cible matelas (€)</label><input type="number" data-path="settings.cushion_target_eur" /></div>
+        <div class="field"><label>Seuil solde bas TR (€)</label><input type="number" data-path="settings.low_balance_threshold_eur" /></div>
+        <div class="field"><label>ETF réduit (€/sem)</label><input type="number" data-path="settings.etf_reduced_weekly_eur" /></div>
+        <div class="field"><label>ETF soutenable (€/sem)</label><input type="number" data-path="settings.etf_sustainable_weekly_eur" /></div>
+        <div class="field"><label>Plafond cash / jour (€)</label><input type="number" data-path="settings.daily_cash_cap_eur" /></div>
+        <div class="field"><label>Salaire (€/mois)</label><input type="number" data-path="income.salary_eur" /></div>
+      </div>
+
+      <div class="subhead">Soldes actuels</div>
+      <div class="grid-2">
+        <div class="field"><label>Cash matelas (TR) €</label><input type="number" data-path="balances.cushion_cash_eur" /></div>
+        <div class="field"><label>Cash dispo TR (€)</label><input type="number" data-path="balances.tr_cash_eur" /></div>
+      </div>
+
+      <div class="subhead">ETF en cours</div>
+      <div class="grid-2">
+        <div class="field"><label>Montant actuel (€/sem)</label><input type="number" data-path="etf.current_weekly_eur" /></div>
+        <div class="field inline" style="align-self:end">
+          <label>Achat ETF prévu&nbsp;?</label>
+          <input type="checkbox" data-path="etf.buy_planned" />
+        </div>
+      </div>
+
+      <div class="subhead">Charges fixes (ordres permanents)</div>
+      <div id="charges-editor"></div>
+
+      <div class="subhead">Prêt papa</div>
+      <div class="grid-2">
+        <div class="field"><label>Mensualité (€)</label><input type="number" data-path="loan_family.monthly_eur" /></div>
+        <div class="field"><label>Début</label><input type="date" data-path="loan_family.start" /></div>
+        <div class="field"><label>Fin</label><input type="date" data-path="loan_family.end" /></div>
+      </div>
+
+      <div class="subhead">Compteur « jours sans jeu » (optionnel)</div>
+      <div class="field"><label>Date de référence (vide = masqué)</label><input type="date" data-path="gambling_free_since" /></div>
+
+      <div class="btn-row">
+        <button class="primary" id="save-settings">Enregistrer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= DONNÉES ======================= -->
+  <section id="view-data" class="view">
+    <div class="card">
+      <h2>💾 Mes données</h2>
+      <p class="hint">
+        Tout vit dans ce navigateur (localStorage). <strong>Rien n'est envoyé en ligne.</strong>
+        Exporte régulièrement un fichier <code>data.json</code> comme sauvegarde (gitignoré).
+      </p>
+      <div class="btn-row">
+        <button class="primary" id="export-btn">⬇️ Exporter (data.json)</button>
+        <button id="import-btn">⬆️ Importer un JSON</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden />
+      </div>
+      <div class="btn-row">
+        <button class="ghost" id="load-example">Charger l'exemple de démo</button>
+        <button class="danger" id="reset-btn">Tout réinitialiser</button>
+      </div>
+      <p class="hint" id="install-hint" style="display:none">
+        💡 Astuce : « Ajouter à l'écran d'accueil » pour l'utiliser comme une appli.
+      </p>
+    </div>
+    <div class="privacy">Local-first · aucune télémétrie · aucune connexion sortante</div>
+  </section>
+
+  <!-- ======================= NAV ======================= -->
+  <nav class="tabbar">
+    <button data-view="dashboard" class="active"><span class="ico">🏠</span>Tableau</button>
+    <button data-view="guardrails"><span class="ico">🛡️</span>Garde-fous</button>
+    <button data-view="settings"><span class="ico">⚙️</span>Réglages</button>
+    <button data-view="data"><span class="ico">💾</span>Données</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

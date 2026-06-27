@@ -1,0 +1,10 @@
+# Données personnelles — NE JAMAIS COMMIT
+data.json
+*.local.json
+.env
+.env.*
+
+# Divers
+node_modules/
+__pycache__/
+.DS_Store
