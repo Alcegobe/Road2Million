@@ -3,8 +3,10 @@
 
 import { load, save, resetToDefault, importData, exportString } from './store.js';
 import * as L from './logic.js';
+import { parseCsv } from './csv.js';
 
 let state = load();
+let selectedMonth = null; // filtre mois pour la vue Dépenses ('' = tout)
 
 /* Exemple de démo intégré (valeurs bidon) — utilisable hors-ligne, sans fichier. */
 const DEMO = {
@@ -165,6 +167,86 @@ function renderGuardrailsProgress() {
 }
 
 /* ============================================================
+   RENDU — DÉPENSES (import CSV + catégories)
+============================================================ */
+function renderSpending() {
+  const months = L.availableMonths(state);
+  const sel = $('#month-select');
+  if (selectedMonth === null) selectedMonth = months[0] || '';
+  sel.innerHTML =
+    `<option value="">Tout</option>` +
+    months.map((m) => `<option value="${m}" ${m === selectedMonth ? 'selected' : ''}>${m}</option>`).join('');
+
+  const spend = L.spendingByCategory(state, selectedMonth || null);
+  const body = $('#spending-body');
+  if (!spend.count) {
+    body.innerHTML = `<div class="hint">Aucune transaction importée pour cette période. Charge un CSV ci-dessus.</div>`;
+  } else {
+    const max = spend.items[0]?.total || 1;
+    body.innerHTML =
+      `<div class="kpi" style="margin-bottom:10px"><span class="big">${L.eur(spend.total)}</span><span class="target">de dépenses · ${spend.count} opérations</span></div>` +
+      spend.items
+        .map((it) => `
+          <div style="margin:10px 0">
+            <div class="row" style="border:0;padding:2px 0">
+              <span class="label">${it.name}</span>
+              <span class="val">${L.eur(it.total)}</span>
+            </div>
+            <div class="progress"><span style="width:${(it.total / max) * 100}%"></span></div>
+          </div>`)
+        .join('');
+  }
+
+  // Dernières transactions (max 25, plus récentes d'abord)
+  const recent = [...(state.transactions || [])]
+    .filter((t) => !selectedMonth || (t.date || '').startsWith(selectedMonth))
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .slice(0, 25);
+  $('#recent-txns').innerHTML = recent.length
+    ? recent
+        .map((t) => `<div class="row">
+            <span class="label">${t.date || '—'} · ${escapeHtml(t.label || '')}<br><small style="opacity:.7">${t.category || 'Autre'}</small></span>
+            <span class="val ${t.amount < 0 ? 'neg' : 'pos'}">${L.eurPrecise(t.amount)}</span>
+          </div>`)
+        .join('')
+    : `<div class="hint">—</div>`;
+}
+
+function importCsvFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const parsed = parseCsv(String(reader.result));
+    if (!parsed.rows.length) {
+      $('#csv-feedback').textContent = parsed.warning || 'Aucune transaction détectée.';
+      return;
+    }
+    const categorized = L.categorizeAll(parsed.rows, state.categories);
+    // Anti-doublon simple : clé date|label|montant
+    const seen = new Set((state.transactions || []).map((t) => `${t.date}|${t.label}|${t.amount}`));
+    let added = 0;
+    for (const t of categorized) {
+      const key = `${t.date}|${t.label}|${t.amount}`;
+      if (!seen.has(key)) { state.transactions.push(t); seen.add(key); added++; }
+    }
+    persist();
+    selectedMonth = null;
+    renderSpending();
+    $('#csv-feedback').textContent = `${added} nouvelle(s) transaction(s) importée(s)${added < categorized.length ? ` · ${categorized.length - added} doublon(s) ignoré(s)` : ''}.`;
+    toast('Import CSV ✓');
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function clearTransactions() {
+  if (!confirm('Supprimer toutes les transactions importées ?')) return;
+  state.transactions = [];
+  persist();
+  selectedMonth = null;
+  renderSpending();
+  toast('Transactions vidées');
+}
+
+/* ============================================================
    RENDU — RÉGLAGES
 ============================================================ */
 function renderSettings() {
@@ -174,6 +256,27 @@ function renderSettings() {
     else input.value = val ?? '';
   });
   renderChargesEditor();
+  renderCategoriesEditor();
+}
+
+function renderCategoriesEditor() {
+  const box = $('#categories-editor');
+  if (!box) return;
+  box.innerHTML =
+    (state.categories || [])
+      .map((c, i) => `
+        <div class="field" data-cat="${i}">
+          <label>${escapeHtml(c.name)}</label>
+          <input type="text" value="${escapeAttr((c.keywords || []).join(', '))}" data-cat-kw="${i}" placeholder="mot-clé1, mot-clé2…" />
+        </div>`)
+      .join('') || '<div class="hint">Aucune catégorie.</div>';
+  $$('input[data-cat-kw]', box).forEach((el) =>
+    el.addEventListener('input', () => {
+      state.categories[+el.dataset.catKw].keywords = el.value
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }));
 }
 
 function renderChargesEditor() {
@@ -266,17 +369,22 @@ function switchView(name) {
   if (name === 'settings') renderSettings();
   if (name === 'guardrails') renderGuardrails();
   if (name === 'dashboard') renderDashboard();
+  if (name === 'spending') renderSpending();
   window.scrollTo({ top: 0 });
 }
 
 function renderAll() {
   renderDashboard();
   renderGuardrails();
+  renderSpending();
   renderSettings();
 }
 
 function escapeAttr(s) {
   return String(s ?? '').replace(/"/g, '&quot;');
+}
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 }
 
 function bind() {
@@ -287,6 +395,10 @@ function bind() {
   $('#import-file').addEventListener('change', (e) => e.target.files[0] && handleImportFile(e.target.files[0]));
   $('#load-example').addEventListener('click', loadExample);
   $('#reset-btn').addEventListener('click', resetAll);
+  $('#csv-btn').addEventListener('click', () => $('#csv-file').click());
+  $('#csv-file').addEventListener('change', (e) => e.target.files[0] && importCsvFile(e.target.files[0]));
+  $('#clear-txn').addEventListener('click', clearTransactions);
+  $('#month-select').addEventListener('change', (e) => { selectedMonth = e.target.value; renderSpending(); });
 
   if (!window.matchMedia('(display-mode: standalone)').matches) {
     const h = $('#install-hint');

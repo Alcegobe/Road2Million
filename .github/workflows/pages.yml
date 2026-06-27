@@ -1,0 +1,43 @@
+name: Déployer la PWA sur GitHub Pages
+
+# Publie le dossier src/ (la PWA statique) sur GitHub Pages.
+# Aucune donnée personnelle n'est concernée : data.json est gitignoré et ne quitte jamais l'appareil.
+# Prérequis (à faire une fois dans le repo) :
+#   1. Rendre le repo public (Pages gratuit) OU disposer d'un plan payant pour un repo privé.
+#   2. Settings → Pages → Build and deployment → Source = "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact (dossier src/)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: src
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

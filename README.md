@@ -21,7 +21,9 @@ Voir [`cahier-des-charges.md`](./cahier-des-charges.md) pour le détail de la lo
   - **Round-trip** → solde TR bas + achat ETF prévu : *« ne pas investir un argent qu'il faudra revendre. »*
 - **Checklist garde-fous** cochable et sauvegardée (Apple/Google Pay retiré, carte rangée, plafond cash,
   EPIS, bloqueur Stop Jeu / Gamban, personne de confiance).
-- **Réglages** : tous tes chiffres, modifiables, gardés en local.
+- **Dépenses** : import CSV (Beobank / Trade Republic) lu **sur l'appareil**, catégorisation auto
+  par mots-clés, répartition des dépenses par catégorie et par mois, dernières transactions.
+- **Réglages** : tous tes chiffres + les règles de catégorisation, modifiables, gardés en local.
 - **Données** : export `data.json`, import, exemple de démo, réinitialisation.
 - **(Optionnel) Compteur « jours sans jeu »** — un encouragement, jamais un contrôle.
 
@@ -41,6 +43,25 @@ Puis ouvre **http://localhost:8000/** dans le navigateur.
 Sur mobile : « Ajouter à l'écran d'accueil » pour l'utiliser comme une appli installée, hors-ligne.
 
 > Alternative sans Python : `npx serve src` (ou n'importe quel petit serveur statique).
+
+---
+
+## Mettre en ligne (GitHub Pages) — pour l'utiliser sur ton téléphone
+
+Le workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publie automatiquement
+le dossier `src/` sur GitHub Pages à chaque push sur `main`. Tu obtiens une URL du type
+`https://<utilisateur>.github.io/Road2Million/`, installable sur l'écran d'accueil.
+
+> 🔒 **Tes données restent locales même hébergé.** Pages ne publie que le « squelette » de l'app
+> (HTML/CSS/JS). Tes montants vivent dans le `localStorage` de **ton** navigateur et ne sont jamais
+> envoyés sur GitHub. Le repo ne contient aucune donnée (`data.json` est gitignoré).
+
+À faire une seule fois :
+
+1. **Rendre le repo public** (Pages est gratuit sur repo public ; en privé il faut un plan payant).
+   C'est sans risque ici : aucune donnée financière n'est dans le code.
+2. **Settings → Pages → Build and deployment → Source = « GitHub Actions »**.
+3. Le prochain push (ou merge) sur `main` déclenche le déploiement ; l'URL apparaît dans l'onglet **Actions**.
 
 ---
 
@@ -78,6 +99,6 @@ Road2Million/
 
 ## À venir (nice-to-have)
 
-- Import CSV des exports Beobank + Trade Republic, catégorisation auto par mots-clés.
-- Graphiques d'évolution (cash, dépenses par catégorie, restant du prêt).
+- Graphiques d'évolution dans le temps (cash, dépenses par catégorie, restant du prêt).
 - Rappel d'allocation le jour de paie (*pay-yourself-first*).
+- Affinage des règles de catégorisation au vu des vrais libellés de tes relevés.

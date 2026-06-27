@@ -43,6 +43,14 @@ export const DEFAULT_DATA = {
     { key: 'trusted_person', label: 'Une personne de confiance est au courant', done: false }
   ],
   subscriptions: [],
+  /* Règles de catégorisation auto par mots-clés (éditables dans les Réglages). */
+  categories: [
+    { name: 'Nourriture hors-maison', keywords: ['q8', 'burger', 'mcdo', 'mcdonald', 'quick', 'kfc', 'fast', 'frite', 'deliveroo', 'uber eats', 'takeaway', 'pizza', 'resto', 'restaurant', 'lunch', 'snack', 'kebab'] },
+    { name: 'Abos perso', keywords: ['spotify', 'netflix', 'disney', 'youtube', 'prime', 'apple.com/bill', 'hbo', 'dazn', 'canal'] },
+    { name: 'Abos pro', keywords: ['openai', 'claude', 'anthropic', 'github', 'adobe', 'notion', 'figma', 'vercel', 'alcego'] },
+    { name: 'Courses', keywords: ['colruyt', 'delhaize', 'carrefour', 'aldi', 'lidl', 'okay', 'spar', 'proxy'] },
+    { name: 'Carburant / transport', keywords: ['total', 'esso', 'lukoil', 'shell', 'tec', 'sncb', 'stib', 'de lijn'] }
+  ],
   transactions: [],
   gambling_free_since: null
 };

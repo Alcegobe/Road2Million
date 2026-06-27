@@ -118,6 +118,42 @@ export function subscriptionTotals(data) {
   return { perso, pro, total: perso + pro };
 }
 
+/* Catégorise un libellé d'après les règles (mots-clés). Renvoie le nom ou 'Autre'. */
+export function categorize(label, categories) {
+  const l = String(label || '').toLowerCase();
+  for (const cat of categories || []) {
+    if ((cat.keywords || []).some((kw) => kw && l.includes(String(kw).toLowerCase()))) {
+      return cat.name;
+    }
+  }
+  return 'Autre';
+}
+
+/* Applique la catégorisation à une liste de transactions importées. */
+export function categorizeAll(rows, categories) {
+  return rows.map((r) => ({ ...r, category: categorize(r.label, categories) }));
+}
+
+/* Totaux de DÉPENSES (amount < 0) par catégorie, triés du plus gros au plus petit.
+   Si `month` (AAAA-MM) est fourni, on ne compte que ce mois-là. */
+export function spendingByCategory(data, month = null) {
+  const txns = (data.transactions || []).filter((t) => t.amount < 0 && (!month || (t.date || '').startsWith(month)));
+  const map = new Map();
+  for (const t of txns) {
+    const cat = t.category || 'Autre';
+    map.set(cat, (map.get(cat) || 0) + Math.abs(t.amount));
+  }
+  const items = [...map.entries()].map(([name, total]) => ({ name, total })).sort((a, b) => b.total - a.total);
+  const total = items.reduce((s, x) => s + x.total, 0);
+  return { items, total, count: txns.length };
+}
+
+/* Liste des mois (AAAA-MM) présents dans les transactions, plus récent d'abord. */
+export function availableMonths(data) {
+  const set = new Set((data.transactions || []).map((t) => (t.date || '').slice(0, 7)).filter(Boolean));
+  return [...set].sort().reverse();
+}
+
 /* Garde-fous : nombre cochés / total. */
 export function guardrailsProgress(data) {
   const items = data.guardrails || [];

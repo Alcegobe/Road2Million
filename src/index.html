@@ -54,6 +54,35 @@
     </div>
   </section>
 
+  <!-- ======================= DÉPENSES ======================= -->
+  <section id="view-spending" class="view">
+    <div class="card">
+      <h2>📥 Importer un CSV <span class="tag">Beobank · Trade Republic</span></h2>
+      <p class="hint">
+        Télécharge l'export CSV depuis Beobank Online / Trade Republic, puis charge-le ici.
+        Le fichier est lu <strong>sur l'appareil</strong> — rien n'est envoyé en ligne.
+      </p>
+      <div class="btn-row">
+        <button class="primary" id="csv-btn">Choisir un fichier CSV</button>
+        <input type="file" id="csv-file" accept=".csv,text/csv" hidden />
+        <button class="ghost" id="clear-txn">Vider les transactions</button>
+      </div>
+      <div id="csv-feedback" class="hint" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card" id="spending-card">
+      <h2>🍔 Dépenses par catégorie
+        <select id="month-select" class="tag" style="cursor:pointer"></select>
+      </h2>
+      <div id="spending-body"></div>
+    </div>
+
+    <div class="card" id="recent-card">
+      <h2>🧾 Dernières transactions</h2>
+      <div class="rows" id="recent-txns"></div>
+    </div>
+  </section>
+
   <!-- ======================= GARDE-FOUS ======================= -->
   <section id="view-guardrails" class="view">
     <div class="card">
@@ -107,6 +136,9 @@
         <div class="field"><label>Fin</label><input type="date" data-path="loan_family.end" /></div>
       </div>
 
+      <div class="subhead">Règles de catégorisation (mots-clés, séparés par des virgules)</div>
+      <div id="categories-editor"></div>
+
       <div class="subhead">Compteur « jours sans jeu » (optionnel)</div>
       <div class="field"><label>Date de référence (vide = masqué)</label><input type="date" data-path="gambling_free_since" /></div>
 
@@ -143,6 +175,7 @@
   <!-- ======================= NAV ======================= -->
   <nav class="tabbar">
     <button data-view="dashboard" class="active"><span class="ico">🏠</span>Tableau</button>
+    <button data-view="spending"><span class="ico">📥</span>Dépenses</button>
     <button data-view="guardrails"><span class="ico">🛡️</span>Garde-fous</button>
     <button data-view="settings"><span class="ico">⚙️</span>Réglages</button>
     <button data-view="data"><span class="ico">💾</span>Données</button>
