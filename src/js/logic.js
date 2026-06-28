@@ -154,6 +154,71 @@ export function availableMonths(data) {
   return [...set].sort().reverse();
 }
 
+/* ------- Comparaisons mensuelles (accueil) ------- */
+
+/* Clé AAAA-MM d'une date JS. */
+export function ymKey(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+/* Les n derniers mois (clés AAAA-MM), du plus ancien au plus récent (mois courant en dernier). */
+export function lastNMonths(n, today = new Date()) {
+  const out = [];
+  let y = today.getFullYear();
+  let m = today.getMonth();
+  for (let i = 0; i < n; i++) {
+    out.unshift(`${y}-${String(m + 1).padStart(2, '0')}`);
+    m--;
+    if (m < 0) { m = 11; y--; }
+  }
+  return out;
+}
+
+/* Totaux d'un mois : dépensé (somme des montants < 0), reçu (> 0), solde. */
+export function monthTotals(data, month) {
+  let spent = 0;
+  let received = 0;
+  for (const t of data.transactions || []) {
+    if ((t.date || '').slice(0, 7) !== month) continue;
+    if (t.amount < 0) spent += Math.abs(t.amount);
+    else received += t.amount;
+  }
+  return { spent, received, net: received - spent };
+}
+
+export function pctChange(current, baseline) {
+  if (!baseline) return null; // pas de base de comparaison
+  return ((current - baseline) / baseline) * 100;
+}
+
+/* Série mensuelle pour le graphe : [{ month, spent, received, net }]. */
+export function monthlySeries(data, n = 6, today = new Date()) {
+  return lastNMonths(n, today).map((month) => ({ month, ...monthTotals(data, month) }));
+}
+
+/* Comparaison du mois courant vs mois précédent et vs moyenne des 3 mois précédents,
+   pour le champ 'spent' (par défaut) ou 'received'. */
+export function comparison(data, field = 'spent', today = new Date()) {
+  const m = lastNMonths(4, today); // [m-3, m-2, m-1, m0]
+  const v = (mk) => monthTotals(data, mk)[field];
+  const current = v(m[3]);
+  const prev = v(m[2]);
+  const avg3 = (v(m[0]) + v(m[1]) + v(m[2])) / 3;
+  return {
+    current,
+    prev,
+    avg3,
+    pctPrev: pctChange(current, prev),
+    pctAvg3: pctChange(current, avg3)
+  };
+}
+
+/* AAAA-MM -> libellé court FR (« juin »). */
+export function monthLabel(ym) {
+  const [y, mo] = ym.split('-').map(Number);
+  return new Date(y, mo - 1, 1).toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '');
+}
+
 /* Garde-fous : nombre cochés / total. */
 export function guardrailsProgress(data) {
   const items = data.guardrails || [];

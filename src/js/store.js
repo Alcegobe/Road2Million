@@ -43,6 +43,8 @@ export const DEFAULT_DATA = {
     { key: 'trusted_person', label: 'Une personne de confiance est au courant', done: false }
   ],
   subscriptions: [],
+  /* Catégories proposées pour l'argent reçu (saisie rapide). */
+  income_categories: ['Salaire', 'Mutuelle', 'Remboursement', 'Vente', 'Cadeau', 'Autre'],
   /* Règles de catégorisation auto par mots-clés (éditables dans les Réglages).
      L'ORDRE compte : la 1re catégorie qui matche gagne. « Nourriture & crasses »
      est en tête et inclut les stations-service (pompe = toujours bouffe/crasses). */
