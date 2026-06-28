@@ -47,6 +47,14 @@
     { "label": "Streaming (perso)", "amount_eur": 13, "scope": "perso" },
     { "label": "Outil alcego (pro)", "amount_eur": 12, "scope": "pro" }
   ],
+  "categories": [
+    { "name": "Nourriture & crasses (hors-maison)", "keywords": ["q8", "esso", "shell", "pompe", "burger", "mcdo", "frite", "deliveroo", "kebab", "snack", "carrefour express"] },
+    { "name": "Abos perso", "keywords": ["spotify", "netflix", "disney", "youtube", "playstation"] },
+    { "name": "Abos pro", "keywords": ["openai", "github", "adobe", "alcego"] },
+    { "name": "Mutuelle / santé", "keywords": ["mutualite", "partenamut", "solidaris", "pharmacie", "medecin"] },
+    { "name": "Courses", "keywords": ["colruyt", "delhaize", "aldi", "lidl"] },
+    { "name": "Transport", "keywords": ["sncb", "stib", "de lijn", "parking"] }
+  ],
   "transactions": [],
   "gambling_free_since": null
 }

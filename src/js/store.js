@@ -43,13 +43,16 @@ export const DEFAULT_DATA = {
     { key: 'trusted_person', label: 'Une personne de confiance est au courant', done: false }
   ],
   subscriptions: [],
-  /* Règles de catégorisation auto par mots-clés (éditables dans les Réglages). */
+  /* Règles de catégorisation auto par mots-clés (éditables dans les Réglages).
+     L'ORDRE compte : la 1re catégorie qui matche gagne. « Nourriture & crasses »
+     est en tête et inclut les stations-service (pompe = toujours bouffe/crasses). */
   categories: [
-    { name: 'Nourriture hors-maison', keywords: ['q8', 'burger', 'mcdo', 'mcdonald', 'quick', 'kfc', 'fast', 'frite', 'deliveroo', 'uber eats', 'takeaway', 'pizza', 'resto', 'restaurant', 'lunch', 'snack', 'kebab'] },
-    { name: 'Abos perso', keywords: ['spotify', 'netflix', 'disney', 'youtube', 'prime', 'apple.com/bill', 'hbo', 'dazn', 'canal'] },
-    { name: 'Abos pro', keywords: ['openai', 'claude', 'anthropic', 'github', 'adobe', 'notion', 'figma', 'vercel', 'alcego'] },
-    { name: 'Courses', keywords: ['colruyt', 'delhaize', 'carrefour', 'aldi', 'lidl', 'okay', 'spar', 'proxy'] },
-    { name: 'Carburant / transport', keywords: ['total', 'esso', 'lukoil', 'shell', 'tec', 'sncb', 'stib', 'de lijn'] }
+    { name: 'Nourriture & crasses (hors-maison)', keywords: ['q8', 'esso', 'shell', 'lukoil', 'texaco', 'totalenergies', 'total access', 'dats 24', 'octa+', 'gabriels', 'pompe', 'burger', 'mcdo', 'mcdonald', 'quick', 'kfc', 'fast food', 'frite', 'friterie', 'deliveroo', 'uber eats', 'takeaway', 'pizza', 'resto', 'restaurant', 'brasserie', 'taverne', 'lunch', 'snack', 'kebab', 'durum', 'panos', 'exki', 'starbucks', 'boulanger', 'bakker', 'night shop', 'tabac', 'carrefour express'] },
+    { name: 'Abos perso', keywords: ['spotify', 'netflix', 'disney', 'youtube', 'prime video', 'amazon prime', 'apple.com/bill', 'itunes', 'hbo', 'dazn', 'canal+', 'playstation', 'xbox', 'nintendo', 'audible', 'twitch'] },
+    { name: 'Abos pro', keywords: ['openai', 'claude', 'anthropic', 'github', 'adobe', 'notion', 'figma', 'vercel', 'alcego', 'google workspace', 'microsoft 365', 'office 365', 'canva'] },
+    { name: 'Mutuelle / santé', keywords: ['mutualite', 'mutualité', 'mutuelle', 'partenamut', 'solidaris', 'helan', 'mutualite chretienne', 'mutualité chrétienne', 'pharmacie', 'apotheek', 'docteur', 'medecin', 'médecin', 'hopital', 'hôpital', 'dentiste', 'kine', 'kiné', 'opticien'] },
+    { name: 'Courses', keywords: ['colruyt', 'delhaize', 'carrefour', 'aldi', 'lidl', 'okay', 'spar', 'proxy', 'intermarche', 'match', 'cora', 'albert heijn'] },
+    { name: 'Transport', keywords: ['sncb', 'nmbs', 'stib', 'de lijn', 'tec', 'uber', 'bolt', 'parking', 'interparking', 'q-park', 'velo'] }
   ],
   transactions: [],
   gambling_free_since: null
