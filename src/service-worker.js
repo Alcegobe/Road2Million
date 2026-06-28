@@ -2,7 +2,7 @@
    Aucune donnée personnelle n'est mise en cache : seul le code de l'app est caché.
    Le store vit dans localStorage, jamais dans le cache réseau. */
 
-const CACHE = 'road2m-v1';
+const CACHE = 'road2m-v2';
 const SHELL = [
   './',
   './index.html',

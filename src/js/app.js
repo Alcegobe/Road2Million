@@ -1,7 +1,7 @@
 /* app.js — contrôleur de l'UI : rendu + événements. Aucune logique métier ici
    (elle est dans logic.js), aucune persistance directe (elle est dans store.js). */
 
-import { load, save, resetToDefault, importData, exportString } from './store.js';
+import { load, save, resetToDefault, importData, exportString, DEFAULT_DATA } from './store.js';
 import * as L from './logic.js';
 import { parseCsv } from './csv.js';
 
@@ -263,13 +263,15 @@ function renderCategoriesEditor() {
   const box = $('#categories-editor');
   if (!box) return;
   box.innerHTML =
-    (state.categories || [])
+    ((state.categories || [])
       .map((c, i) => `
         <div class="field" data-cat="${i}">
           <label>${escapeHtml(c.name)}</label>
           <input type="text" value="${escapeAttr((c.keywords || []).join(', '))}" data-cat-kw="${i}" placeholder="mot-clé1, mot-clé2…" />
         </div>`)
-      .join('') || '<div class="hint">Aucune catégorie.</div>';
+      .join('') || '<div class="hint">Aucune catégorie.</div>') +
+    `<div class="btn-row"><button id="reset-cats" class="ghost" type="button">↺ Restaurer les catégories conseillées</button></div>
+     <div class="hint">Astuce : une pompe à essence est rangée dans « Nourriture & crasses ». Ajoute tes propres enseignes (séparées par des virgules).</div>`;
   $$('input[data-cat-kw]', box).forEach((el) =>
     el.addEventListener('input', () => {
       state.categories[+el.dataset.catKw].keywords = el.value
@@ -277,6 +279,14 @@ function renderCategoriesEditor() {
         .map((s) => s.trim())
         .filter(Boolean);
     }));
+  $('#reset-cats', box).addEventListener('click', () => {
+    if (!confirm('Remplacer les règles de catégorisation par celles conseillées ? (tes montants et transactions ne sont pas touchés)')) return;
+    state.categories = structuredClone(DEFAULT_DATA.categories);
+    state.transactions = L.categorizeAll(state.transactions || [], state.categories);
+    persist();
+    renderCategoriesEditor();
+    toast('Catégories restaurées ✓');
+  });
 }
 
 function renderChargesEditor() {
